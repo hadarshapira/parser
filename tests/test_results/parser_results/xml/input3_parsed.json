@@ -1,65 +1,44 @@
 [
     {
-        "product_id": "P12345",
-        "sn": "sn112414",
-        "product_name": "Widget X",
-        "category": "Electronics",
-        "test_type": "SPEED",
-        "test_result": "100",
-        "test_result_description": "PASS",
-        "manufacturer": "TechCorp",
-        "test_date": "2023-08-01 10:15:22",
-        "station": "ST_A",
-        "atter_A": "200",
-        "atter_B": "155",
-        "atter_C": "BBB",
-        "atter_D": "BLUE"
+        "headers": {
+            "part": "P12345",
+            "serial_number": "sn112414",
+            "part_des": "Widget X",
+            "category": "Electronics",
+            "test_type": "SPEED",
+            "result_code": 100,
+            "result_description": "PASS",
+            "vendor": "TechCorp",
+            "test_date": "2023-08-01 10:15:22",
+            "station": "ST_A",
+            "source_type": "xml"
+        },
+        "dynamic": {
+            "atter_A": "200",
+            "atter_B": "155",
+            "atter_C": "BBB",
+            "atter_D": "BLUE"
+        }
     },
     {
-        "product_id": "P67890",
-        "sn": "sn112415",
-        "product_name": "Gizmo Y",
-        "category": "Automotive",
-        "test_type": "HEAT",
-        "test_result": "999",
-        "test_result_description": "FAILD",
-        "manufacturer": "AutoTech",
-        "test_date": "2023-07-15 14:17:33",
-        "station": "ST_B",
-        "atter_A": "100",
-        "atter_B": "150",
-        "atter_C": "AAA",
-        "atter_D": "RED"
-    },
-    {
-        "product_id": "P12345",
-        "sn": "sn11241432523623626",
-        "product_name": "Widget X",
-        "category": "Electronics",
-        "test_type": "SPEED",
-        "test_result": "100",
-        "test_result_description": "PASS",
-        "manufacturer": "TechCorp",
-        "test_date": "2023-08-01 10:17:35",
-        "station": "ST_A",
-        "atter_A": "200",
-        "atter_B": "155",
-        "atter_C": "BBB",
-        "atter_D": "BLUE"
-    },
-    {
-        "sn": "sn112414",
-        "product_name": "Widget X",
-        "category": "Electronics",
-        "test_type": "SPEED",
-        "test_result": "100",
-        "test_result_description": "PASS",
-        "manufacturer": "TechCorp",
-        "test_date": "2023-08-01 10:17:40",
-        "station": "ST_A",
-        "atter_A": "200",
-        "atter_B": "155",
-        "atter_C": "BBB",
-        "atter_D": "BLUE"
+        "headers": {
+            "part": "P67890",
+            "serial_number": "sn112415",
+            "part_des": "Gizmo Y",
+            "category": "Automotive",
+            "test_type": "HEAT",
+            "result_code": 999,
+            "result_description": "FAILD",
+            "vendor": "AutoTech",
+            "test_date": "2023-07-15 14:17:33",
+            "station": "ST_B",
+            "source_type": "xml"
+        },
+        "dynamic": {
+            "atter_A": "100",
+            "atter_B": "150",
+            "atter_C": "AAA",
+            "atter_D": "RED"
+        }
     }
 ]

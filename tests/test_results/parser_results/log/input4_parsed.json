@@ -1,50 +1,44 @@
 [
     {
-        "Product": "P12345",
-        "SerialNumber": "sn112414",
-        "product_name": "Widget X",
-        "Category": "Electronics",
-        "TestType": "SPEED",
-        "TestResult": "100",
-        "TestResultDesc": "PASS",
-        "manufacturer": "TechCorp",
-        "Test Date": "2023-08-01 10:15:22",
-        "Station": "ST_A",
-        "atter_A": "200",
-        "atter_B": "155",
-        "atter_C": "BBB",
-        "atter_D": "BLUE"
+        "headers": {
+            "part": "P12345",
+            "serial_number": "sn112414",
+            "part_des": "Widget X",
+            "category": "Electronics",
+            "test_type": "SPEED",
+            "result_code": 100,
+            "result_description": "PASS",
+            "vendor": "TechCorp",
+            "test_date": "2023-08-01 10:15:22",
+            "station": "ST_A",
+            "source_type": "log"
+        },
+        "dynamic": {
+            "atter_A": "200",
+            "atter_B": "155",
+            "atter_C": "BBB",
+            "atter_D": "BLUE"
+        }
     },
     {
-        "Product": "P67890",
-        "SerialNumber": "sn112415",
-        "product_name": "Gizmo Y",
-        "Category": "Automotive",
-        "TestType": "HEAT",
-        "TestResult": "999",
-        "TestResultDesc": "FAILED",
-        "manufacturer": "AutoTech",
-        "Test Date": "2023-08-01 14:17:33",
-        "Station": "ST_B",
-        "atter_A": "100",
-        "atter_B": "150",
-        "atter_C": "AAA",
-        "atter_D": "RED"
-    },
-    {
-        "Product": "P67890",
-        "SerialNumber": "sn112416",
-        "product_name": "Gizmo Y",
-        "Category": "Automotive",
-        "TestType": "HEAT",
-        "TestResult": "100",
-        "TestResultDesc": "PASS",
-        "manufacturer": "AutoTech",
-        "Test Date": "2023-08-01 14:18:33",
-        "Station": "ST_BXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "atter_A": "100",
-        "atter_B": "150",
-        "atter_C": "AAA",
-        "atter_D": "RED"
+        "headers": {
+            "part": "P67890",
+            "serial_number": "sn112415",
+            "part_des": "Gizmo Y",
+            "category": "Automotive",
+            "test_type": "HEAT",
+            "result_code": 999,
+            "result_description": "FAILED",
+            "vendor": "AutoTech",
+            "test_date": "2023-08-01 14:17:33",
+            "station": "ST_B",
+            "source_type": "log"
+        },
+        "dynamic": {
+            "atter_A": "100",
+            "atter_B": "150",
+            "atter_C": "AAA",
+            "atter_D": "RED"
+        }
     }
 ]

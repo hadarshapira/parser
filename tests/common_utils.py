@@ -17,6 +17,21 @@ def get_actual_file_location(file_name, extension, test_output):
     return os.path.join(test_output, "parser_results", extension, f"{file_name}_parsed.json")
 
 
+def ignore_fields_in_json_file(files_paths, ignore_fields):
+    for file_path in files_paths:
+        with open(file_path, 'r') as f:
+            d = json.load(f)
+            for item in d:
+                field_to_remove = []
+                for header in item["headers"]:
+                    if header in ignore_fields:
+                        field_to_remove.append(header)
+                for header in field_to_remove:
+                    del(item["headers"][header])
+        with open(file_path, 'w') as f:
+            json.dump(d, f, indent=4)
+
+
 def get_file_content(file_path):
     with open(file_path) as expected:
         result = json.load(expected)

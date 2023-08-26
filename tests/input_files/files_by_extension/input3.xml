@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<products>
+  <product>
+    <field_1>value_1</field_1>
+    <field_2>value_2</field_2>
+  </product>
+  <product>
+    <field_1>value_3</field_1>
+    <field_2>value_4</field_2>
+  </product>
+</products>

@@ -8,12 +8,13 @@ import filecmp
 import tempfile
 
 from mock import patch
-from common_utils import get_expected_and_actual_files_locations
+from common_utils import get_expected_and_actual_files_locations, ignore_fields_in_json_file
 
 
 @pytest.fixture
 def setup():
     working_dir = tempfile.mkdtemp()
+    # working_dir = os.path.join(os.path.dirname(__file__), "test_results")
     os.makedirs(working_dir, exist_ok=True)
     yield working_dir
     if os.path.isdir(working_dir):
@@ -25,7 +26,7 @@ MAIN = os.path.join(os.path.dirname(os.path.dirname(__file__)), "main.py")
 
 def test_parsing_all_input_types_happy_flow(setup):
 
-    input_files = glob.glob(os.path.join(os.path.dirname(__file__), "input_files", "*"))
+    input_files = glob.glob(os.path.join(os.path.dirname(__file__), "input_files", "samples_by_extension", "*"))
 
     for input_file in input_files:
         fake_args = [
@@ -42,4 +43,5 @@ def test_parsing_all_input_types_happy_flow(setup):
             extension=extension,
             test_output=setup
         )
+        ignore_fields_in_json_file(files_paths=[actual], ignore_fields=["source_file"])
         assert filecmp.cmp(actual, expected)
