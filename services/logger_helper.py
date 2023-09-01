@@ -20,6 +20,6 @@ def init_logger(output_dir: str = tempfile.gettempdir(), name: str = "parser") -
     return logger
 
 
-def remove_handlers(logger: logging.Logger):
+def remove_logger_handlers(logger: logging.Logger):
     for handler in logger.handlers[:]:
         logger.removeHandler(handler)

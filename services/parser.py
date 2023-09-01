@@ -1,8 +1,9 @@
+import os
 import re
 import csv
 import json
 import datetime
-import os.path as osp
+import functools
 
 from typing import *
 from logging import Logger
@@ -12,18 +13,26 @@ from services.logger_helper import init_logger
 from dateutil import parser as datetime_parser
 
 
-class UnknownFileExtensionError(Exception):
-    pass
-
-
 def json_serial(obj):
     if isinstance(obj, datetime.datetime):
         return obj.isoformat(sep=" ", timespec="seconds")
     raise TypeError(f"Type {type(obj)} not serializable")
 
 
+FIELDS_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "configs", "fields_config.json")
+
+
+def exception_wrapper(func):
+    @functools.wraps(func)
+    def func_wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except Exception as ex:
+            raise Exception(f"Exception catch when calling '{func.__name__}':\n{ex}")
+    return func_wrapper
+
+
 class Parser:
-    FIELDS_CONFIG_PATH = osp.join(osp.dirname(osp.dirname(__file__)), "configs", "fields_config.json")
     AVAILABLE_FILE_EXTENSIONS = [
         "json",
         "xml",
@@ -38,15 +47,13 @@ class Parser:
     HEADERS = "headers"
     DYNAMIC = "dynamic"
 
-    def __init__(self, file_path: str = "", logger: Logger = None):
+    def __init__(self, config: str = FIELDS_CONFIG_PATH, logger: Logger = None):
         self.logger = logger if logger else init_logger()
-        self.file_path = file_path
-        self.file_dict = []
-        self.headers = self.init_headers()
+        self.headers = self.init_headers(config=config)
         self.mandatory_headers = set(header.name for header in self.headers.values() if header.mandatory)
 
-    def init_headers(self) -> Dict[Set, Field]:
-        fields_dict = self.json_to_dict(file_path=self.FIELDS_CONFIG_PATH)
+    def init_headers(self, config) -> Dict[Set, Field]:
+        fields_dict = self.json_to_dict(file_path=config)
         fields = [Field(**field) for field in fields_dict]
         headers = {}
         for field in fields:
@@ -56,24 +63,35 @@ class Parser:
             headers[field.name.lower()] = field
         return headers
 
-    def read_file_to_dict(self) -> List[Dict]:
+    def parse(self, file_path: str = ""):
+        file_dict = self._read_file_to_dict(file_path=file_path)
+        return self._convert_to_single_format(
+            file_path=file_path,
+            file_dict=file_dict
+        )
+
+    def _read_file_to_dict(self, file_path) -> List[Dict]:
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"File: {file_path}, doesn't exist, please check your input")
+        if not os.path.isfile(file_path):
+            raise IsADirectoryError(f"File: {file_path}, is a directory, please check your input")
         self.logger.info("Extracting file content to dict")
-        file_extension = self.file_path.rsplit(".", 1)[-1]
+        file_extension = file_path.rsplit(".", 1)[-1]
         self.logger.debug(f"File extension: {file_extension}")
         if file_extension not in self.AVAILABLE_FILE_EXTENSIONS:
-            raise UnknownFileExtensionError(f"The given file have no legal extension to parse, "
+            raise Exception(f"The given file have no legal extension to parse, "
                                             f"please make sure your file is one of the following"
                                             f" formats and have valid extension: "
                                             f"{', '.join(self.AVAILABLE_FILE_EXTENSIONS)}")
-        self.file_dict = getattr(self, f'{file_extension}_to_dict')(self.file_path)
-        return self.file_dict
+        file_dict = getattr(self, f'{file_extension}_to_dict')(file_path)
+        return file_dict
 
-    def convert_to_single_format(self, dict_to_convert: List[Dict] = None, source_type: str = None):
-        if not dict_to_convert:
-            dict_to_convert = self.file_dict
+    def _convert_to_single_format(self, file_path: str = "", file_dict: List[Dict] = None):
+        file_dict = file_dict if file_dict else {}
+        source_type = file_path.split(".", 1)[-1]
         result = []
-        for item in dict_to_convert:
-            format_item = self._convert_single_item_to_single_format(item=item, source_type=source_type)
+        for item in file_dict:
+            format_item = self._convert_single_item_to_single_format(file_path=file_path, item=item, source_type=source_type)
             if format_item is False:
                 continue
             if not self._check_if_missing_mandatory_headers(format_item=format_item):
@@ -81,7 +99,7 @@ class Parser:
             result.append(format_item)
         return result
 
-    def _convert_single_item_to_single_format(self, item, source_type):
+    def _convert_single_item_to_single_format(self, file_path, item, source_type):
         format_item = {self.HEADERS: {}, self.DYNAMIC: {}}
         for key, value in item.items():
             header = self.headers.get(key.lower())
@@ -91,17 +109,16 @@ class Parser:
             if not self._validate_value(header, value):
                 return False
             format_item[self.HEADERS][header.name] = self.FIELDS_TYPES[header.field_type](value)
-        format_item = self._add_source_type_and_file(format_item=format_item, source_type=source_type)
+        format_item = self._add_source_type_and_file(file_path=file_path, format_item=format_item, source_type=source_type)
         return format_item
 
-    def _add_source_type_and_file(self, format_item, source_type):
+    def _add_source_type_and_file(self, file_path, format_item, source_type):
         header = self.headers.get("source_type")
-        source_type = source_type if source_type else self.file_path.split(".", 1)[-1]
         if self._validate_value(header, source_type):
             format_item[self.HEADERS][header.name] = self.FIELDS_TYPES[header.field_type](source_type)
         header = self.headers.get("source_file")
-        if self._validate_value(header, self.file_path):
-            format_item[self.HEADERS][header.name] = self.FIELDS_TYPES[header.field_type](self.file_path)
+        if self._validate_value(header, file_path):
+            format_item[self.HEADERS][header.name] = self.FIELDS_TYPES[header.field_type](file_path)
         return format_item
 
     def _check_if_missing_mandatory_headers(self, format_item):
@@ -137,11 +154,13 @@ class Parser:
         return True
 
     @staticmethod
+    @exception_wrapper
     def json_to_dict(file_path: str) -> List[Dict]:
         with open(file_path, 'r') as json_file:
             return json.load(json_file)
 
     @staticmethod
+    @exception_wrapper
     def xml_to_dict(file_path: str) -> List[Dict]:
         tree = ElementTree.parse(file_path)
         root = tree.getroot()
@@ -154,12 +173,14 @@ class Parser:
         return result
 
     @staticmethod
+    @exception_wrapper
     def csv_to_dict(file_path: str) -> List[Dict]:
         with open(file_path, 'r', newline='') as csvfile:
             result = list(csv.DictReader(csvfile))
         return result
 
     @staticmethod
+    @exception_wrapper
     def log_to_dict(file_path: str) -> List[Dict]:
         result = []
         with open(file_path, 'r') as logfile:

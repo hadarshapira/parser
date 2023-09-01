@@ -4,11 +4,10 @@ import main
 import glob
 import pytest
 import shutil
-import filecmp
 import tempfile
 
 from mock import patch
-from common_utils import get_expected_and_actual_files_locations, ignore_fields_in_json_file
+from tests import common_utils
 
 
 @pytest.fixture
@@ -38,10 +37,10 @@ def test_parsing_all_input_types_happy_flow(setup):
             main.run()
 
         file_name, extension = os.path.basename(input_file).rsplit(".", 1)
-        actual, expected = get_expected_and_actual_files_locations(
+        actual, expected = common_utils.get_expected_and_actual_files_locations(
             file_name=file_name,
             extension=extension,
             test_output=setup
         )
-        ignore_fields_in_json_file(files_paths=[actual], ignore_fields=["source_file"])
-        assert filecmp.cmp(actual, expected)
+        common_utils.ignore_fields_in_json_file(files_paths=[actual], ignore_fields=["source_file"])
+        assert common_utils.compare_json_files(actual, expected)

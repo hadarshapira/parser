@@ -36,3 +36,10 @@ def get_file_content(file_path):
     with open(file_path) as expected:
         result = json.load(expected)
     return result
+
+
+def compare_json_files(file1, file2):
+    with open(file1, 'r') as f1, open(file2, 'r') as f2:
+        content1 = f1.read().replace('\r\n', '\n')
+        content2 = f2.read().replace('\r\n', '\n')
+        return content1 == content2
