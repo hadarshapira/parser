@@ -10,7 +10,7 @@ from logging import Logger
 from services.field import Field
 from xml.etree import ElementTree
 from services import fields_config
-from services.logger_helper import init_logger
+from services.logger_service import init_logger
 from dateutil import parser as datetime_parser
 
 

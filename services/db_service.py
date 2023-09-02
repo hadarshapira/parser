@@ -25,7 +25,7 @@ def db_connection(func):
     return func_wrapper
 
 
-class DatabaseHelper:
+class DatabaseService:
 
     HEADERS = "headers"
     DYNAMIC = "dynamic"

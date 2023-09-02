@@ -7,8 +7,8 @@ import tempfile
 from typing import *
 
 from services.parser import Parser, json_serial
-from services.database_helper import DatabaseHelper
-from services.logger_helper import init_logger, remove_logger_handlers
+from services.db_service import DatabaseService
+from services.logger_service import init_logger, remove_logger_handlers
 
 
 def _get_command_line_args():
@@ -29,7 +29,7 @@ def _get_parser(config, logger):
 
 def _write_results_to_db(update_db: bool, output_dir: str, results: List[Dict], append: bool, parser: Parser):
     if update_db:
-        database_helper = DatabaseHelper(
+        database_helper = DatabaseService(
             fields=parser.fields,
             dynamic_data=parser.dynamic_data_keys,
             output=output_dir,
