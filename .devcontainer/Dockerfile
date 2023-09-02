@@ -1,5 +1,5 @@
-FROM mcr.microsoft.com/devcontainers/python:3.11
+FROM mcr.microsoft.com/devcontainers/miniconda:3
 
-COPY tests/requirements.txt requirements.txt
+COPY tests/environment.yml /tmp/conda-tmp/
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN conda env update -n base -f /tmp/conda-tmp/environment.yml && rm -rf /tmp/conda-tmp
