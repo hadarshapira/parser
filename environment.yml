@@ -1,5 +1,6 @@
 dependencies:
-  - pip
+  - pip==23.1.2
+  - python==3.11
   - pip:
     - python-dateutil==2.8.2
     - pyinstaller==5.13.2
