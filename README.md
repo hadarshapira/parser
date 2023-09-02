@@ -40,6 +40,8 @@ Copy the executable from the container to you host.
 
   `main -i <input file> -o <output folder> -u`
 
+  ! Alternatively you can use docker container as windows PSB
+
 
 * For Windows use docker container by the following command:
 
