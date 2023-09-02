@@ -32,22 +32,15 @@ Copy the executable from the container to you host.
 
 * For Unix/Linux systems copy main.py file: 
 
-  `docker cp my-parser:/app/dist/main ../main`
-
-  Add execute permission to main.py `chmod +x ./main.py`
+  `docker cp my-parser:/app/dist/main ./main`
 
   Now you can run the executable on your host:
 
   CML for example:
 
-  `main.py -i <input file> -o <output folder> -u`
+  `main -i <input file> -o <output folder> -u`
 
 
+* For Windows use docker container by the following command:
 
-* For Windows copy .bat file: `docker cp my-parser:/app/main.bat ..\main.bat`
-
-  Now you can run the executable on your host:
-
-  CML for example:
-
-  `main.bat -i <input file> -o <output folder> -u`
+  `docker run -v <your_inputs_files_dir>:/working_dir parser -i /working_dir/<input_file> -o /working_dir/ -u`
