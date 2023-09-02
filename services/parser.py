@@ -9,6 +9,7 @@ from typing import *
 from logging import Logger
 from services.field import Field
 from xml.etree import ElementTree
+from services import fields_config
 from services.logger_helper import init_logger
 from dateutil import parser as datetime_parser
 
@@ -17,9 +18,6 @@ def json_serial(obj: datetime.datetime) -> str:
     if isinstance(obj, datetime.datetime):
         return obj.isoformat(sep=" ", timespec="seconds")
     raise TypeError(f"Type {type(obj)} not serializable")
-
-
-FIELDS_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "configs", "fields_config.json")
 
 
 def exception_wrapper(func):
@@ -47,7 +45,7 @@ class Parser:
     HEADERS = "headers"
     DYNAMIC = "dynamic"
 
-    def __init__(self, config: str = FIELDS_CONFIG_PATH, logger: Logger = None):
+    def __init__(self, config: str = None, logger: Logger = None):
         self.logger = logger if logger else init_logger()
         self.fields = []
         self.dynamic_data_keys = set()
@@ -55,7 +53,10 @@ class Parser:
         self.mandatory_headers = set(header.name for header in self.headers.values() if header.mandatory)
 
     def init_headers(self, config: str) -> Dict[str, Field]:
-        fields_dict = self.json_to_dict(file_path=config)
+        if config:
+            fields_dict = self.json_to_dict(file_path=config)
+        else:
+            fields_dict = fields_config.fields_dict
         self.fields.extend([Field(**field) for field in fields_dict])
         headers = {}
         for field in self.fields:
