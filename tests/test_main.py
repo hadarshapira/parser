@@ -13,7 +13,6 @@ from tests import common_utils
 @pytest.fixture
 def setup():
     working_dir = tempfile.mkdtemp()
-    # working_dir = os.path.join(os.path.dirname(__file__), "test_results")
     os.makedirs(working_dir, exist_ok=True)
     yield working_dir
     if os.path.isdir(working_dir):
@@ -31,7 +30,8 @@ def test_parsing_all_input_types_happy_flow(setup):
         fake_args = [
             MAIN,
             "-i", input_file,
-            "-o", setup
+            "-o", setup,
+            "-u"
         ]
         with patch.object(sys, 'argv', fake_args):
             main.run()
@@ -44,3 +44,7 @@ def test_parsing_all_input_types_happy_flow(setup):
         )
         common_utils.ignore_fields_in_json_file(files_paths=[actual], ignore_fields=["source_file"])
         assert common_utils.compare_json_files(actual, expected)
+
+        db_test_path = os.path.join(setup, "parser_results", "parser.db")
+        db_expected_path = os.path.join(os.path.dirname(__file__), "test_results", extension, f"parser_{file_name}.db")
+        common_utils.compare_db_files(db1_path=db_test_path, db2_path=db_expected_path)
