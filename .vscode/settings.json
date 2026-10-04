@@ -1,4 +1,5 @@
 {
+    "python.defaultInterpreterPath": "/opt/conda/envs/parser/bin/python",
     "python.testing.pytestArgs": [
         "tests"
     ],
