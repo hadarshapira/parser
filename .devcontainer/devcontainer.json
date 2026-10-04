@@ -3,5 +3,12 @@
 	"build": { 
 		"context": "..",
 		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+			"python.defaultInterpreterPath": "/opt/conda/envs/parser/bin/python"
+			}
+		}
 	}
 }
