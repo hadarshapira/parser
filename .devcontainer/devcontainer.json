@@ -1,14 +1,17 @@
 {
 	"name": "Miniconda (Python 3)",
-	"build": { 
+	"build": {
 		"context": "..",
 		"dockerfile": "Dockerfile"
 	},
 	"customizations": {
 		"vscode": {
 			"settings": {
-			"python.defaultInterpreterPath": "/opt/conda/envs/parser/bin/python"
-			}
+				"python.defaultInterpreterPath": "/opt/conda/envs/parser/bin/python"
+			},
+			"extensions": [
+				"qwtel.sqlite-viewer"
+			]
 		}
 	}
 }
